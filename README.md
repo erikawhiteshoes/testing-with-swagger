@@ -1,6 +1,6 @@
 # Social Tables Platform Intern Challenge
 
-### TO Run
+### To Run
 1. run 'npm install'
 2. 'npm start'
 3. go to localhost:8080/swagger
