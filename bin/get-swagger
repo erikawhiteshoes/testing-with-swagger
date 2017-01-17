@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+"use strict";
+const docs = require("../docs");
+console.log(JSON.stringify(docs(), null, 4));

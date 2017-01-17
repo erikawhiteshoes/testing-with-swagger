@@ -27,6 +27,18 @@ const basicAuth    = require('basic-auth')
    }
  }
 
+ /**
+  * @swagger
+  * /:
+  *   get:
+  *     description: Gets package information
+  *     produces:
+  *       - application/json
+  *     responses:
+  *       200:
+  *         description: returns object with basic info
+  */
+
 app.get('/', (req, res) => {
   const package = require('./package.json')
   res.json({
@@ -36,15 +48,55 @@ app.get('/', (req, res) => {
   })
 })
 
+/**
+ * @swagger
+ * /events:
+ *   get:
+ *     description: Returns all events
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: returns event object
+ */
 app.get('/events', (req, res) => {
   eventService.allEvents((err, events) => {
     if(err) {
       res.send(err)
     }
-    res.json({data:events})
+    res.status(200)
+       .json({data:events})
   })
 })
 
+/**
+ * @swagger
+ * /events:
+ *   post:
+ *     description: Posts new events
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: event
+ *         in: body
+ *         description: adds new event
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/NewEvent"
+ *     responses:
+ *       201:
+ *         description: returns event object
+ * definitions:
+ *   NewEvent:
+ *     type: object
+ *     properties:
+ *       name:
+ *         type: string
+ *       start:
+ *         type: string
+ *       end:
+ *         type: string
+ */
 app.post('/events', (req, res) => {
   let events = req.body.data
   eventService.newEvents(events, (err, insertedEvents) => {
@@ -57,6 +109,24 @@ app.post('/events', (req, res) => {
   })
 })
 
+/**
+ * @swagger
+ * /events/{event_id}:
+ *   get:
+ *     description: Returns single event by ID
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: event_id
+ *         in: path
+ *         type: string
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: returns event object
+ *       404:
+ *         description: Error with invalid event_id
+ */
 app.get('/events/:event_id', (req, res) => {
   eventService.findOneEventById(req.params.event_id, (err, event) => {
     if(err) {
@@ -72,6 +142,38 @@ app.get('/events/:event_id', (req, res) => {
   })
 })
 
+/**
+ * @swagger
+ * /events/{event_id}:
+ *   put:
+ *     description: Updates events by ID
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: event_id
+ *         in: path
+ *         type: string
+ *         required: true
+ *       - name: event
+ *         in: body
+ *         description: updated event
+ *         required: true
+ *         schema:
+ *           $ref: "#/definitions/UpdatedEvent"
+ *     responses:
+ *       200:
+ *         description: returns updated event object
+ * definitions:
+ *   UpdatedEvent:
+ *     type: object
+ *     properties:
+ *       name:
+ *         type: string
+ *       start:
+ *         type: string
+ *       end:
+ *         type: string
+*/
 app.put('/events/:event_id', (req, res) => {
   let eventId = req.params.event_id
   let updatedEvent = req.body.data
@@ -79,10 +181,26 @@ app.put('/events/:event_id', (req, res) => {
     if(err) {
       res.send(err)
     }
-    res.json({replaced:[event._id]})
+    res.json({replaced:[eventId]})
   })
 })
 
+/**
+ * @swagger
+ * /events/{event_id}:
+ *   delete:
+ *     description: Deletes event by ID
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: event_id
+ *         in: path
+ *         type: string
+ *         required: true
+ *     responses:
+ *       202:
+ *         description: event accepted for deletion
+ */
 app.delete('/events/:event_id', (req, res) => {
   let deletedId = req.params.event_id
   eventService.deleteEvent(deletedId, (err, event) => {
@@ -94,6 +212,19 @@ app.delete('/events/:event_id', (req, res) => {
   })
 })
 
+/**
+ * @swagger
+ * /secrets:
+ *   get:
+ *     description: Returns single event by ID
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: event object
+ *       401:
+ *         description: Error invalid credentials
+ */
 app.get('/secrets', auth, (req, res) => {
   res.json({
     "secrets": [
@@ -102,8 +233,11 @@ app.get('/secrets', auth, (req, res) => {
   })
 })
 
-app.listen(3000, () => {
-  console.log('Listening on port 3000!')
+app.use('/swagger/swagger.json', express.static('swagger.json'));
+app.use('/swagger/', express.static('swagger-ui/dist'));
+
+app.listen(8080, () => {
+  console.log('Listening on port 8080!')
 })
 
 module.exports = app
