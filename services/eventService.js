@@ -12,9 +12,8 @@ function allEvents(cb) {
 }
 
 function newEvents(arr, cb) { //cb(err,val)
-  console.dir(arr)
   let E = arr.map(obj => ({name: obj.name, start: obj.start, end: obj.end}))
-  events.insert(E, cb)
+    events.insert(E, cb)
 }
 
 function findOneEventById(id, cb) {
@@ -22,7 +21,7 @@ function findOneEventById(id, cb) {
 }
 
 function updateEvent(id, evts, cb) {
-  //evts = evts.length !== undefined ? [evts] : evts
+  evts = evts.length !== undefined ? [evts] : evts
     events.update({_id: id}, evts, {returnUpdatedDocs:true}, (err, numAffected, affectedDocuments) => {
       if(err) {console.error(err)}
       cb(err, affectedDocuments)

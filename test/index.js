@@ -12,25 +12,25 @@ let eventToDelete = require("./fixtures/eventToDelete");
 const AWFUL_SEMVER_REGEX =  /\bv?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[\da-z\-]+(?:\.[\da-z\-]+)*)?(?:\+[\da-z\-]+(?:\.[\da-z\-]+)*)?\b/ig;
 
 describe("should call our events api", function() {
-	let api = chai.request(app)
+	let api = chai.request(app);
 	it("and should report its status and version", function() {
 		return api.get('/')
 			.then(res => {
 				expect(res).to.have.status(200);
 				expect(res.body).to.have.property("status").and.equal("ok");
-				expect(res.body).to.have.property("version");
+				expect(res.body).to.have. property("version");
 				expect(res.body.version).to.match(AWFUL_SEMVER_REGEX);
-			})
+			});
 	});
 
 	it("and should protect its secrets", function() {
 		return api.get('/secrets')
 			.then(res => {
-				throw("Shouldn't get here.")
+				throw("Shouldn't get here.");
 			})
 			.catch(err => {
 				expect(err).to.have.status(401);
-			})
+			});
 	});
 
 	it("and should divulge its secrets to an admin", function() {
@@ -39,8 +39,8 @@ describe("should call our events api", function() {
 			.then(res => {
 				expect(res).to.have.status(200);
 				expect(res.body).to.have.property("secrets");
-			})
-	})
+			});
+	});
 
 	it("and should create some events", function() {
 		return api
@@ -132,7 +132,7 @@ describe("should call our events api", function() {
 						expect(delRes.body).to.have.property("deleted");
 						expect(delRes.body.deleted).to.have.lengthOf(1);
 						return eventId;
-					})
+					});
 			})
 			.then(eventId => {
 				return api.get(`/events/${eventId}`)
@@ -142,7 +142,7 @@ describe("should call our events api", function() {
 					.catch(err => {
 						expect(err).to.have.status(404);
 						return true;
-					})
-			})
+					});
+			});
 	});
 });

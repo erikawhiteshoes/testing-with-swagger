@@ -36,7 +36,19 @@ const basicAuth    = require('basic-auth')
   *       - application/json
   *     responses:
   *       200:
-  *         description: returns object with basic info
+  *         description: returns info object
+  *         schema:
+  *           $ref: "#/definitions/APIInfo"
+  * definitions:
+  *   APIInfo:
+  *     type: object
+  *     properties:
+  *       name:
+  *         title: string
+  *       version:
+  *         type: string
+  *       status:
+  *         type: string
   */
 
 app.get('/', (req, res) => {
@@ -51,6 +63,39 @@ app.get('/', (req, res) => {
 /**
  * @swagger
  * /events:
+ *   post:
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: data
+ *         in: body
+ *         description: events object array
+ *         required: true
+ *         schema:
+ *           type: array
+ *           items:
+ *             type: string
+ *     responses:
+ *       201:
+ *         description: returns event object
+ *         schema:
+ *           type: object
+ */
+app.post('/events', (req, res) => {
+  let events = req.body
+  eventService.newEvents(events, (err, insertedEvents) => {
+    if(err){
+      res.statusCode(501).send(err)
+    }
+    let insertedIds = insertedEvents.map(evt => evt._id )
+    res.status(201)
+       .json({data:insertedEvents})
+  })
+})
+
+/**
+ * @swagger
+ * /events:
  *   get:
  *     description: Returns all events
  *     produces:
@@ -58,6 +103,18 @@ app.get('/', (req, res) => {
  *     responses:
  *       200:
  *         description: returns event object
+ *         schema:
+ *           $ref: "#/definitions/AllEvents"
+ * definitions:
+ *   AllEvents:
+ *     type: object
+ *     properties:
+ *       name:
+ *         type: string
+ *       start:
+ *         type: string
+ *       end:
+ *         type: string
  */
 app.get('/events', (req, res) => {
   eventService.allEvents((err, events) => {
@@ -69,45 +126,6 @@ app.get('/events', (req, res) => {
   })
 })
 
-/**
- * @swagger
- * /events:
- *   post:
- *     description: Posts new events
- *     produces:
- *       - application/json
- *     parameters:
- *       - name: event
- *         in: body
- *         description: adds new event
- *         required: true
- *         schema:
- *           $ref: "#/definitions/NewEvent"
- *     responses:
- *       201:
- *         description: returns event object
- * definitions:
- *   NewEvent:
- *     type: object
- *     properties:
- *       name:
- *         type: string
- *       start:
- *         type: string
- *       end:
- *         type: string
- */
-app.post('/events', (req, res) => {
-  let events = req.body.data
-  eventService.newEvents(events, (err, insertedEvents) => {
-    if(err){
-      res.statusCode(501).send(err)
-    }
-    var insertedIds = insertedEvents.map(evt => evt._id )
-    res.status(201)
-       .json({data:insertedEvents, inserted:insertedIds})
-  })
-})
 
 /**
  * @swagger
@@ -124,8 +142,18 @@ app.post('/events', (req, res) => {
  *     responses:
  *       200:
  *         description: returns event object
- *       404:
- *         description: Error with invalid event_id
+ *         schema:
+ *           $ref: "#/definitions/OneEvent"
+ * definitions:
+ *   OneEvent:
+ *     type: object
+ *     properties:
+ *       name:
+ *         type: string
+ *       start:
+ *         type: string
+ *       end:
+ *         type: string
  */
 app.get('/events/:event_id', (req, res) => {
   eventService.findOneEventById(req.params.event_id, (err, event) => {
@@ -138,7 +166,8 @@ app.get('/events/:event_id', (req, res) => {
       res.send('event not found')
       return
     }
-    res.json({data:event})
+    res.status(200)
+       .json({data:event})
   })
 })
 
@@ -154,34 +183,29 @@ app.get('/events/:event_id', (req, res) => {
  *         in: path
  *         type: string
  *         required: true
- *       - name: event
+ *       - name: data
  *         in: body
- *         description: updated event
+ *         description: events object array
  *         required: true
  *         schema:
- *           $ref: "#/definitions/UpdatedEvent"
+ *           type: array
+ *           items:
+ *             type: string
  *     responses:
  *       200:
- *         description: returns updated event object
- * definitions:
- *   UpdatedEvent:
- *     type: object
- *     properties:
- *       name:
- *         type: string
- *       start:
- *         type: string
- *       end:
- *         type: string
+ *         description: returns event object
+ *         schema:
+ *           type: object
 */
 app.put('/events/:event_id', (req, res) => {
   let eventId = req.params.event_id
-  let updatedEvent = req.body.data
+  let updatedEvent = req.body
   eventService.updateEvent(eventId, updatedEvent, (err, event) => {
     if(err) {
       res.send(err)
     }
-    res.json({replaced:[eventId]})
+    res.status(200)
+       .json({replaced:eventId})
   })
 })
 
@@ -200,6 +224,8 @@ app.put('/events/:event_id', (req, res) => {
  *     responses:
  *       202:
  *         description: event accepted for deletion
+ *         schema:
+ *           type: object
  */
 app.delete('/events/:event_id', (req, res) => {
   let deletedId = req.params.event_id
@@ -207,8 +233,9 @@ app.delete('/events/:event_id', (req, res) => {
     if(err) {
       res.send(err)
     }
+    console.log(deletedId)
     res.status(202)
-       .json({deleted:[deletedId]})
+       .json({deleted:deletedId})
   })
 })
 
@@ -216,17 +243,25 @@ app.delete('/events/:event_id', (req, res) => {
  * @swagger
  * /secrets:
  *   get:
- *     description: Returns single event by ID
+ *     summary: Returns single event by ID with username=admin and password=password
+ *     security:
+ *      - basicAuth: []
  *     produces:
  *       - application/json
  *     responses:
  *       200:
- *         description: event object
- *       401:
- *         description: Error invalid credentials
+ *         description: will receive secret message with valid credentials
+ *         schema:
+ *           type: object
+ *           items:
+ *             $ref: "#/definitions/SecretInfo"
+ * definitions:
+ *   SecretInfo:
+ *     type: array
  */
 app.get('/secrets', auth, (req, res) => {
-  res.json({
+  res.status(200)
+     .json({
     "secrets": [
       "The answer is 42."
     ]
