@@ -61,7 +61,7 @@ describe('/events', function() {
       /*eslint-enable*/
       api.post('/events')
       .set('Content-Type', 'application/json')
-      .send([{"name":"climb Everest.","start":"2016-10-24T20:44:49.100Z","end":"2016-10-24T20:44:49.100Z"},{"name":"do not climb Everest","start":"2016-10-29T20:44:49.100Z","end":"2016-10-29T20:44:49.100Z"}])
+      .send([{"name":"Amazing bday party.","start":"2016-10-24T20:44:49.100Z","end":"2016-10-24T20:44:49.100Z"},{"name":"Hiking trip to Shenandoah","start":"2016-10-29T20:44:49.100Z","end":"2016-10-29T20:44:49.100Z"}])
       .expect(201)
       .end(function(err, res) {
         if (err) return done(err);

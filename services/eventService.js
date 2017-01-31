@@ -3,8 +3,8 @@
 const Datastore = require('nedb')
 const path = require('path')
 
-
 const events = new Datastore({ filename: path.join(__dirname, 'events.db')})
+
 events.loadDatabase()
 
 function allEvents(cb) {

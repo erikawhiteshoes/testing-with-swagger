@@ -6,6 +6,7 @@ const eventService = require('./services/eventService.js')
 const bodyParser   = require('body-parser')
 const basicAuth    = require('basic-auth')
 
+
  app.use(bodyParser.urlencoded({extended: true}))
  app.use(bodyParser.json())
 
@@ -271,8 +272,8 @@ app.get('/secrets', auth, (req, res) => {
 app.use('/swagger/swagger.json', express.static('swagger.json'));
 app.use('/swagger/', express.static('swagger-ui/dist'));
 
-app.listen(8080, () => {
+const server = app.listen(8080, () => {
   console.log('Listening on port 8080!')
 })
 
-module.exports = app
+module.exports = [app, server]

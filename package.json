@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node_modules/node-dev/bin/node-dev index.js",
-    "test": "mocha",
+    "test": "node ./test/index.js",
     "swagger:validate": "SWAGGER_FILE=$(mktemp -d)/swagger.json ; node ./docs.js > \"${SWAGGER_FILE}\" ; swagger validate \"${SWAGGER_FILE}\" ; rm -f \"${SWAGGER_FILE}\"",
     "swagger": "node ./docs.js > swagger.json"
   },

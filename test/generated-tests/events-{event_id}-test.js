@@ -70,7 +70,7 @@ describe('/events/{event_id}', function() {
       };
 
       /*eslint-enable*/
-      api.get('/events/IMkTN8WdsZKK8Pvo')
+      api.get('/events/fJWoudM2nP9Us7sj')
       .set('Content-Type', 'application/json')
       .expect(200)
       .end(function(err, res) {
@@ -91,9 +91,9 @@ describe('/events/{event_id}', function() {
       };
 
       /*eslint-enable*/
-      api.put('/events/IMkTN8WdsZKK8Pvo')
+      api.put('/events/fJWoudM2nP9Us7sj')
       .set('Content-Type', 'application/json')
-      .send([{"name":"meet me in St. Louis","start":"2016-10-29T20:44:49.100Z","end":"2016-10-29T20:44:49.100Z"}])
+      .send([{"name":"Eat More Cheese","start":"2016-10-30T20:44:49.100Z","end":"2016-10-30T20:44:49.100Z"}])
       .expect(200)
       .end(function(err, res) {
         if (err) return done(err);
@@ -113,7 +113,7 @@ describe('/events/{event_id}', function() {
       };
 
       /*eslint-enable*/
-      api.del('/events/IMkTN8WdsZKK8Pvo')
+      api.del('/events/fJWoudM2nP9Us7sj')
       .set('Content-Type', 'application/json')
       .expect(202)
       .end(function(err, res) {
