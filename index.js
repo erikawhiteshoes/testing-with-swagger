@@ -234,7 +234,6 @@ app.delete('/events/:event_id', (req, res) => {
     if(err) {
       res.send(err)
     }
-    console.log(deletedId)
     res.status(202)
        .json({deleted:deletedId})
   })

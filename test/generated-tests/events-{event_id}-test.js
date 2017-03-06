@@ -70,7 +70,7 @@ describe('/events/{event_id}', function() {
       };
 
       /*eslint-enable*/
-      api.get('/events/fJWoudM2nP9Us7sj')
+      api.get('/events/Z9s34eFZqxbwOaI8')
       .set('Content-Type', 'application/json')
       .expect(200)
       .end(function(err, res) {
@@ -91,7 +91,7 @@ describe('/events/{event_id}', function() {
       };
 
       /*eslint-enable*/
-      api.put('/events/fJWoudM2nP9Us7sj')
+      api.put('/events/Z9s34eFZqxbwOaI8')
       .set('Content-Type', 'application/json')
       .send([{"name":"Eat More Cheese","start":"2016-10-30T20:44:49.100Z","end":"2016-10-30T20:44:49.100Z"}])
       .expect(200)
@@ -113,7 +113,7 @@ describe('/events/{event_id}', function() {
       };
 
       /*eslint-enable*/
-      api.del('/events/fJWoudM2nP9Us7sj')
+      api.del('/events/Z9s34eFZqxbwOaI8')
       .set('Content-Type', 'application/json')
       .expect(202)
       .end(function(err, res) {

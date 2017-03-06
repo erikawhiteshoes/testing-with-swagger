@@ -1,13 +1,35 @@
-# Social Tables Platform Intern Challenge
+### Demonstrating Swagger Generated Tests with the ST Platform Intern Challenge
 
-### To Run
+A possible additional benefit of using Swagger specification to document your API is the ability to auto-generate tests based on the specification file.  
+
+In this scenario, I used Apigee's [Swagger Test Templates](https://github.com/apigee-127/swagger-test-templates) with mocha/chai to generate tests based on the specification used to document the platform intern challenge.
+You can read a little more in [Apigee's blogpost](https://apigee.com/about/blog/developer/swagger-test-templates-test-your-apis) about their endeavor.
+
+####To Run Test Demo
+1. run 'npm install'
+2. 'npm test' (This will run test/index.js which starts the server, runs lib/generate-test, tests all files in folder with mocha and closes the server after testing concludes.)
+
+
+####Setup
+lib/generate-test.js houses the primary logic from swagger-test-templates. It will clear and seed the database with data from fixtures and generate individual test files to a specified folder.
+
+Initial configuration requires one to cheese the assertionFormat (should/__expect__/assert), testModule(__supertest__/request) and pathName which is the array of path names available for testing. I optionally added pathParam to specify the event_id and requestData which is used to send mock data.
+
+#####Of note:
+- For testing OAUTH or Basic Auth the token should be stored in a .env file.     
+- If a response code is defined in the Swagger spec one needs to define the response type(i.e. object/array). The test generation may require more specificity than what is needed when initially documenting your API.
+- If a test fails, look at the individual test file.  If '__DATA GOES HERE__' appears in the file it probably means that either the Swagger spec is incorrect or there isn't enough specificity.
+
+####Conclusion
+The documentation for swagger-test-templates is limited as is error handling, but could still be worthwhile to use with some extra setup.  
+
+
+#### To Run App without testing
 1. run 'npm install'
 2. 'npm start'
 3. go to localhost:8080/swagger
 
-Your solution should implement the following endpoints:
-
-### GET /
+#### GET /
 Should return status info in the form of:
 ```
 {
@@ -19,7 +41,7 @@ Should return status info in the form of:
 1. The status property should be set to "ok"
 2. The version property should return the version from package.json
 
-### GET /events
+#### GET /events
 Should return json listing (array) of all events in the format:
 ```
 {
@@ -34,7 +56,7 @@ Should return json listing (array) of all events in the format:
 }
 ```
 
-### GET /events/:event_id
+#### GET /events/:event_id
 Should return json for a specific event in the format:
 ```
 {
@@ -47,7 +69,7 @@ Should return json for a specific event in the format:
 }
 ```
 
-### POST /events
+#### POST /events
 Should allow creation of multiple events by posting an array in the format:
 ```
 {
@@ -75,7 +97,7 @@ Should return an array of inserted ids:
 }
 ```
 
-### PUT /events/:event_id
+#### PUT /events/:event_id
 Should replace an event with a particular id with new data:
 ```
 {
@@ -96,7 +118,7 @@ Should return the replaced id:
 }
 ```
 
-### DELETE /events/:event_id
+#### DELETE /events/:event_id
 Should delete an event with a particular id.
 
 Should return the deleted id:
@@ -107,11 +129,7 @@ Should return the deleted id:
 	]
 }
 ```
-
-A test suite is provided to guide you and let you know when you have completed the task. You can run
-the suite with the ```npm test``` command.
-
-### GET /secrets
+#### GET /secrets
 Should get a list of secrets:
 ```
 {
@@ -119,60 +137,3 @@ Should get a list of secrets:
     "The answer is 42."
   ]
 }
-```
-The twist:  You should protect this secrets endpoint with basic authentication. Write a simple middleware that
-checks the authorization header against a username and passwordof your choosing.  If you hit this endpoint
-without credentials, it should return a 401 Unauthorized status. The auth middleware should only be
-applied to this endpoint.
-
-## Getting started
-
-A test suite has been provided in the /test folder.  You should examine these tests to figure out additional
-requirements like proper HTTP status codes that should be returned from your endpoints.  Do not modify the tests.
-
-1. Get a recent version of node.js (6 or higher): nodejs.org
-2. Clone this repo
-3. cd to the repo's directory and run ``npm install``
-3. If you prefer to use a specific persistence layer or database, install that and use ```npm``` to
-install the bindings. Popular choices include: mysql, sqlite, redis, etc. If you'd rather not
-have to think about it, the package.json included in this repo depends on bindings to leveldb, a simple
-embedded key value store, see docs here: https://www.npmjs.com/package/levelup
-4. Run npm ```npm test``` to see what tests are failing
-5. Develop and repeat #4 until all the tests pass.
-
-## How to submit
-Send all your files in one email to internchallenge@socialtables.com with the subject line, Social Tables Venue Mapper Intern Challenge.
-
-You must include the following files in your email: YourInitials-readme.{md, txt}, YourInitials-code.{tar.gz, zip}, YourInitials-resume.pdf (where YourInitials are your initials).
-
-These files will contain:
-
-* The YourInitials-readme.{md, txt} contains instructions for running your code and any notes you wish to include.
-* The YourInitials-code.{tar.gz, zip} contains your code. You can optionally also submit a link to your code in the readme file.
-* A file named YourInitials-resume.pdf containing your resume.
-
-Submitting your node-modules folder isn't necessary, for example, because we can get it by running npm install; however, you should at least submit any files you found necessary to change and enough support and explanation so we can reproduce your results. In any case, include all the information in YourInitials-readme.{md, txt}.
-
-## FAQ
-
-**Can I copy code from the Internet?**  
-You must cite any outside resources you use in your work (for example, using comments to denote a snippet obtained from Stack Overflow).  
-
-**Can I post my solution to the Internet/GitHub?**  
-We ask that you don't. It makes it much harder to evaluate submissions when a completed solution is available for review.
-
-**Can I copy someone else's submission, cite it, and submit?**  
-No.
-
-**Can I submit without completing all the challenge?**  
-Yes.
-
-**What is the status of my application?**  
-Email <internchallenge@socialtables.com>.
-
-**I see a typo.**  
-Submit a pr.
-
-**I still have a question.**  
-Submit a Github issue.
-# platform-challenge-swagger

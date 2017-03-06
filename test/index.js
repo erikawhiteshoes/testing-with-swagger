@@ -9,15 +9,16 @@ var options = {
 //generates tests
 exec(`node ./lib/generate-test.js`, options, function(err,stdout,stderr) {
   if (err) {
-    console.log('Child process exited with error code', err.code);
+    console.log('Test generation: Child process exited with error code', err.code);
     return;
   }
   //starts server
   let [app, server] = require('../index.js');
 
+  //runs zee tests
   exec(`mocha ./test/generated-tests/*.js`, options, function(err,stdout,stderr) {
     if (err) {
-      console.log('Child process exited with error code', err.code);
+      console.log('Mocha: Child process exited with error code', err.code);
       return;
     }
     console.log(stdout);
