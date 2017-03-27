@@ -5,22 +5,22 @@ A possible additional benefit of using Swagger specification to document your AP
 In this scenario, I used Apigee's [Swagger Test Templates](https://github.com/apigee-127/swagger-test-templates) with mocha/chai to generate tests based on the specification used to document the platform intern challenge.
 You can read a little more in [Apigee's blogpost](https://apigee.com/about/blog/developer/swagger-test-templates-test-your-apis) about their endeavor.
 
-####To Run Test Demo
+#### To Run Test Demo
 1. run 'npm install'
 2. 'npm test' (This will run test/index.js which starts the server, runs lib/generate-test, tests all files in folder with mocha and closes the server after testing concludes.)
 
 
-####Setup
+#### Setup
 lib/generate-test.js houses the primary logic from swagger-test-templates. It will clear and seed the database with data from fixtures and generate individual test files to a specified folder.
 
-Initial configuration requires one to cheese the assertionFormat (should/__expect__/assert), testModule(__supertest__/request) and pathName which is the array of path names available for testing. I optionally added pathParam to specify the event_id and requestData which is used to send mock data.
+Initial configuration requires one to choose the assertionFormat (should/__expect__/assert), testModule(__supertest__/request) and pathName which is the array of path names available for testing. I optionally added pathParam to specify the event_id and requestData which is used to send mock data.
 
-#####Of note:
+##### Of note:
 - For testing OAUTH or Basic Auth the token should be stored in a .env file.     
 - If a response code is defined in the Swagger spec one needs to define the response type(i.e. object/array). The test generation may require more specificity than what is needed when initially documenting your API.
 - If a test fails, look at the individual test file.  If '__DATA GOES HERE__' appears in the file it probably means that either the Swagger spec is incorrect or there isn't enough specificity.
 
-####Conclusion
+#### Conclusion
 The documentation for swagger-test-templates is limited as is error handling, but could still be worthwhile to use with some extra setup.  
 
 
